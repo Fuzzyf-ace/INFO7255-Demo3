@@ -45,7 +45,7 @@ public class MessageReceiver {
             // Create the index with mapping
            IndexOperations indexOperations =  elasticsearchOperations.indexOps(IndexCoordinates.of("plan_index"));
             indexOperations.create();
-            String mapping = "{\"properties\":{\"planType\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"deductible\":{\"type\":\"long\"},\"name\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"_org\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"copay\":{\"type\":\"long\"},\"creationDate\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"plan_join\":{\"type\":\"join\",\"relations\":{\"linkedPlanServices\":[\"linkedService\",\"planserviceCostShares\"],\"plan\":[\"planCostShares\",\"linkedPlanServices\"]},\"eager_global_ordinals\":true},\"objectId\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"objectType\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}}},\"_routing\":{\"required\":true}}";
+            String mapping = "{\"properties\":{\"planType\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"deductible\":{\"type\":\"long\"},\"name\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"_org\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"copay\":{\"type\":\"long\"},\"creationDate\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"plan_join\":{\"type\":\"join\",\"relations\":{\"linkedPlanServices\":[\"linkedService\",\"planserviceCostShares\"],\"plan\":[\"planCostShares\",\"linkedPlanServices\"]},\"eager_global_ordinals\":true},\"objectId\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"objectType\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}}},\"_routing\":{\"required\":false}}";
             Document document = Document.parse(mapping);
             indexOperations.putMapping(document);
         }
@@ -70,10 +70,6 @@ public class MessageReceiver {
 
 
     private boolean deleteDocument(String indexName, String documentId) {
-        Map<String, Object> mapping =  elasticsearchOperations.indexOps(IndexCoordinates.of(indexName)).getMapping();
-        System.out.println("mapping: " + mapping);
-        Settings settings =  elasticsearchOperations.indexOps(IndexCoordinates.of(indexName)).getSettings();
-        System.out.println("settings: " + settings.toJson());
         try {
 //            elasticsearchOperations.delete
             elasticsearchOperations.delete(documentId, IndexCoordinates.of(indexName));
